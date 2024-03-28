@@ -7,7 +7,12 @@ use App\Repository\CartRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Form\UserType;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route('/admin')]
 class AdminController extends AbstractController
@@ -30,11 +35,39 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/users', name: 'app_user_index', methods: ['GET'])]
+    #[Route('/user', name: 'app_user_index', methods: ['GET'])]
     public function indexUsers(UserRepository $userRepository): Response
     {
-        return $this->render('admin/users/index.html.twig', [
+        return $this->render('admin/user/index.html.twig', [
             'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/user/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+    public function newUser(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('/admin/user/new.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/user/{id}', name: 'app_user_show_admin', methods: ['GET'])]
+    public function showUser(User $user, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
+    {
+        return $this->render('/admin/user/show.html.twig', [
+            'user' => $user,
         ]);
     }
 }

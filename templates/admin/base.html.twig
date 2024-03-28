@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}e-commerce{% endblock %}</title>
+        <link rel="icon" href="{{ asset('img/favicon.png') }}">
+        
+        <!-- Styles généraux -->
+        {{ encore_entry_link_tags('front') }}
+
+        <!-- Scripts généraux -->
+        {{ encore_entry_script_tags('app') }}
+
+        <!-- Styles supplémentaires / optionnels -->
+        {% block stylesheets %}    
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        <!-- Scripts supplémentaires / optionnels -->
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body class="admin">
+        {{ include('/admin/header.html.twig') }}
+        <div class="page-content">
+            {% block content %}{% endblock %}
+        </div>
+       
+    </body>
+</html>

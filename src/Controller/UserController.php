@@ -19,25 +19,7 @@ class UserController extends AbstractController
 {
    
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
+    
 
 /*     #[Route('/my-profile', name: 'app_user_my_profile')]
     public function myProfile(): Response
@@ -67,18 +49,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_show_admin', methods: ['GET'])]
-    public function showAdmin(User $user, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
-    {
-
-        if(!$authorizationChecker->isGranted('ROLE_ADMIN') && $this->getUser()->getId() != $user->getId()){
-            return new Response('NON', 403);
-        }
-
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
-    }
+    
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
