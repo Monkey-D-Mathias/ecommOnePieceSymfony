@@ -1,6 +1,7 @@
 $primary: green;
 
 // Import all of Bootstrap's CSS
+@import "admin/navbar.scss";
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons";
 
@@ -11,7 +12,7 @@ body {
 }
 
 .page-content {
-    min-height: calc(100vh - 50px - 250px);
+    min-height: calc(100vh - 50px - 255px);
 }
 
 // .carousel-inner {

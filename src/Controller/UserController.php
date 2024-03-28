@@ -60,9 +60,23 @@ class UserController extends AbstractController
         ]);
     } */
 
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
+    #[Route('/profil', name: 'app_user_show', methods: ['GET'])]
+    public function show(UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
     {
+        $user = $userRepository->findOneBy(['id' => $this->getUser()->getId()]);
+        if(!$user){
+            return new Response('NON', 403);
+        }
+
+        return $this->render('user/show.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_user_show_admin', methods: ['GET'])]
+    public function showAdmin(User $user, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
+    {
+
         if(!$authorizationChecker->isGranted('ROLE_ADMIN') && $this->getUser()->getId() != $user->getId()){
             return new Response('NON', 403);
         }
