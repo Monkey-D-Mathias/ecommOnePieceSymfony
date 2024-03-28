@@ -1,0 +1,39 @@
+$primary: green;
+
+// Import all of Bootstrap's CSS
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+
+body {
+    background-color: rgb(255, 255, 255);
+    font-size: 16px;
+    text-align: center;
+}
+
+.page-content {
+    min-height: calc(100vh - 50px - 250px);
+}
+
+// .carousel-inner {
+//     .carousel-item {
+//         img {
+
+//         }
+//     }
+// }
+
+h1, .h1 {
+    font-size: 42px;
+}
+
+h2, .h2 {
+    font-size: 36px;
+}
+
+.shadow{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.carousel-inner{
+    max-height: 90vh;
+}
