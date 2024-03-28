@@ -1,0 +1,23 @@
+.admin{
+    nav{
+        left: 0;
+        background: #212529;
+        top: 0;
+        padding: 26px;
+        max-width: 200px;
+        width: 100%;
+        border-right: 1px solid gray;
+        color: white;
+        bottom: 0;
+        position: fixed;
+    }
+
+    .page-content {
+        min-height: calc(100vh - 50px - 255px);
+        width: 100%;
+        max-width: calc(100% - 200px);
+        right: 0;
+        position: absolute;
+    }
+
+}
