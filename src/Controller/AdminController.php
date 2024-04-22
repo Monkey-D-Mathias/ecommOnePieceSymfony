@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\File;
+use App\Form\FileType;
 use App\Repository\CartRepository;
+use App\Service\ImageManager;
+use Monolog\DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,6 +36,31 @@ class AdminController extends AbstractController
 
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
+        ]);
+    }
+
+    #[Route('/upload', name: 'app_admin_upload')]
+    public function upload(Request $request, ImageManager $imageManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $file = new File();
+
+        $form = $this->createForm(FileType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $uploadedFile = $form->get('file')->getData();
+            $fileName = $imageManager->upload($uploadedFile, $file->isPublic());
+
+            $file->setPath($fileName);
+            $file->setType('image');
+            $file->setCreatedOn(new \DateTimeImmutable());
+        }
+
+        return $this->render('admin/upload.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 
