@@ -9,6 +9,7 @@ use App\Repository\CartRepository;
 use App\Service\ImageManager;
 use Monolog\DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
@@ -40,13 +41,13 @@ class AdminController extends AbstractController
     }
 
     #[Route('/upload', name: 'app_admin_upload')]
-    public function upload(Request $request, ImageManager $imageManager): Response
+    public function upload(Request $request, ImageManager $imageManager, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $file = new File();
 
-        $form = $this->createForm(FileType::class);
+        $form = $this->createForm(FileType::class, $file);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,11 +58,37 @@ class AdminController extends AbstractController
             $file->setPath($fileName);
             $file->setType('image');
             $file->setCreatedOn(new \DateTimeImmutable());
+
+            $entityManager->persist($file);
+            $entityManager->flush();
         }
 
         return $this->render('admin/upload.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/download', name: 'app_admin_download')]
+    public function download(EntityManagerInterface $em)
+    {
+        $images = $em->getRepository(File::class)->findAll();
+        return $this->render("admin/download.html.twig", [
+            'images' => $images
+        ]);
+
+    }
+
+    #[Route('/image/stream/{id}', name: 'app_image_stream')]
+    public function imageStream(int $id, EntityManagerInterface $em, ImageManager $imageManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $image = $em->getRepository(File::class)->find($id);
+        $filePath = $image->getPath();
+
+        //return new Response('Fichier ok derrier image->path');
+
+        return $imageManager->stream($filePath);
     }
 
     #[Route('/user', name: 'app_user_index', methods: ['GET'])]

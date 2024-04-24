@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Service;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageManager 
 {
@@ -32,25 +33,34 @@ class ImageManager
     {
         $fileName = null;
        // $file_exists($this->targetDirectory."".$this->subDirectory.'/'.$fileName);
-
-       if (!file_exists($this->getDirectory($public))){
-            mkdir($this->getDirectory($public), 0644, true);
+//dd($this->getDirectory($public));
+       if (file_exists($this->getDirectory($public)) === false){
+            mkdir($this->getDirectory($public), 0755, true);
        }
 
        $count = 0;
-       $nb = 10;
 
-        while($count < $nb && $fileName == "" || file_exists($this->getDirectory($public).'/'.$fileName)) {
-            $fileName = md5($file->getBasename()).'_'.uniqid('',true).$file->guessExtension();
+        while($count < 10 && $fileName == null || file_exists($this->getDirectory($public).'/'.$fileName)) {
+            $fileName = md5($file->getClientOriginalName()).
+            '_'.
+            str_replace('.','_',uniqid('',true)).
+            $file->guessExtension();
             $count ++;
         }
 
-        if ($count >= $nb) {
+        if ($count >= 10) {
             throw new \Exception("Impossible de générer un nom de fichier unique aprés ".$count." tentatives");
         }
 
         $file->move($this->getDirectory($public), $fileName);
 
         return $fileName;
+    }
+
+    public function stream(string $filePath): BinaryFileResponse
+    {
+        $response = new BinaryFileResponse($this->getDirectory(false)."/".$filePath);
+
+        return $response;
     }
 }
