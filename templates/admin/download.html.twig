@@ -1,0 +1,35 @@
+{% extends '/admin/base.html.twig' %}
+
+{% block title %}Hello AdminController!{% endblock %}
+ 
+{% block body %}
+<h1>Download</h1>
+ 
+<div class="container">
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image in images %}
+                <tr>
+                    <th scope="row">{{ image.id }}</th>
+                    <td>{{ image.name }}</td>
+
+                    {% if (image.public == true) %}
+                    <td>{{ image.path }}</td>
+                    {% else %}
+                        <td><img srrc=" {{ path("app_image_stream", {id : image.id })}}" height = "100"></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+ 
+{% endblock %}
