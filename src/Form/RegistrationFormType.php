@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -29,7 +31,12 @@ class RegistrationFormType extends AbstractType
 
             ->add('firstname')
             ->add('lastname')
-            ->add('phone')
+            ->add('phone', NumberType::class, [
+                'attr' => [
+                    'input' => 'tel',
+                ],
+                'label' => 'Téléphone'
+            ])
 
             ->add('civilite', ChoiceType::class, [
                 'mapped' => false,
@@ -38,6 +45,7 @@ class RegistrationFormType extends AbstractType
 
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'label' => 'Accepter les conditions d\'utilisation',
                 'constraints' => [
                     new IsTrue([
                         'message' => 'You should agree to our terms.',

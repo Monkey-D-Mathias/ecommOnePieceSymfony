@@ -39,11 +39,11 @@ class UserController extends AbstractController
     #[Route('/profil', name: 'app_user_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
     {
-        $user = $userRepository->findOneBy(['id' => $this->getUser()->getId()]);
-        if(!$user){
-            return new Response('NON', 403);
+        $user = $userRepository->findOneBy(['id' => $this->getUser()]);
+        if(!$this->getUser()){
+            //Le retourne vers la page de connexion
+            return $this->redirectToRoute('app_login');
         }
-
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);

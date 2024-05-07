@@ -3,18 +3,22 @@
 {% block title %}User{% endblock %}
 
 {% block content %}
-    <h1>User</h1>
-
+{% if is_granted('ROLE_ADMIN') %}
+    <a class="btn btn-sm btn-secondary" href="{{ path('app_user_index') }}"> Retour</a>
+{% endif %}
     <table class="table">
         <tbody>
+            {% if is_granted('ROLE_ADMIN') %}
             <tr>
                 <th>Id</th>
                 <td>{{ user.id }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Email</th>
                 <td>{{ user.email }}</td>
             </tr>
+            {% if is_granted('ROLE_ADMIN') %}
             <tr>
                 <th>Roles</th>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
@@ -23,6 +27,7 @@
                 <th>Password</th>
                 <td>{{ user.password }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Lastname</th>
                 <td>{{ user.lastname }}</td>
@@ -35,6 +40,7 @@
                 <th>Phone</th>
                 <td>{{ user.phone }}</td>
             </tr>
+            {% if is_granted('ROLE_ADMIN') %}
             <tr>
                 <th>CreatedAt</th>
                 <td>{{ user.createdAt ? user.createdAt|date('Y-m-d H:i:s') : '' }}</td>
@@ -47,12 +53,18 @@
                 <th>IsVerified</th>
                 <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
             </tr>
+            {% endif %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="d-flex">
+            <a class="btn btn-primary" href="{{ path('app_user_edit', {'id': user.id}) }}">Modifier</a>
+            {{ include('user/_delete_form.html.twig') }}
+        </div>
+    {% endif %}
 
-    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-
-    {{ include('user/_delete_form.html.twig') }}
+    {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_logout') }}" class="btn btn-danger  mt-2">Déconnexion</a>
+    {% endif %}
 {% endblock %}
