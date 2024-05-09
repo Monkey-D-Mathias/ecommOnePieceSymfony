@@ -18,29 +18,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class UserController extends AbstractController
 {
    
-
-    
-
-/*     #[Route('/my-profile', name: 'app_user_my_profile')]
-    public function myProfile(): Response
-    {
-        $user = $this->getUser();
-
-        if (!$user) {
-            // Si aucun utilisateur n'est connecté, exception ou redirection vers page connexion
-            throw new AccessDeniedException('Vous devez être connecté pour accéder à cette page.');
-        }
-
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
-    } */
-
     #[Route('/profil', name: 'app_user_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
     {
-        $user = $userRepository->findOneBy(['id' => $this->getUser()]);
-        if(!$this->getUser()){
+        $user = $this->getUser();
+        if(!$user){
             //Le retourne vers la page de connexion
             return $this->redirectToRoute('app_login');
         }
@@ -49,38 +31,5 @@ class UserController extends AbstractController
         ]);
     }
 
-    
 
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            $role = $form->get('roles')->getData();;
-            $roles = [];
-            $roles[] = $role;
-            $roles[] = "ROLE_USER"; 
-            $user->setRoles($roles);
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-    }
 }

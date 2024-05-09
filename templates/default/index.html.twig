@@ -54,23 +54,21 @@
 <section class="py-5" id="product-list">
     <div class="container">
         <div class="row">
-
-            {% for i in 1..8 %}
-
+            {% for product in products|slice(0, 6) %}
                 <div class="col-12 col-md-6 col-lg-3 mb-5">
                     <div class="card" style="width: 18rem;">
                         <img src="/img/logo-ecom.png" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            <h5 class="card-title">{{product.name}}</h5>
+                            <p class="card-text">{{product.description}}</p>
+                            <p class="card-text">Prix : {{product.priceHt}}€</p>
+                            <a class="btn btn-primary" href="{{ path('app_product_show', {'id': product.id}) }}">Voir plus</a>
                         </div>
                     </div>
                 </div>
-
             {% endfor %}
-
         </div>
+        <a href="{{path('app_product_index')}}">Voir plus</a>
     </div>
 </section>
 
