@@ -3,8 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Cart;
+use App\Entity\File;
+use App\Form\FileType;
 use App\Repository\CartRepository;
+use App\Service\ImageManager;
+use Monolog\DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
@@ -33,6 +38,57 @@ class AdminController extends AbstractController
         return $this->render('admin/index.html.twig', [
             'controller_name' => 'AdminController',
         ]);
+    }
+
+    #[Route('/upload', name: 'app_admin_upload')]
+    public function upload(Request $request, ImageManager $imageManager, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $file = new File();
+
+        $form = $this->createForm(FileType::class, $file);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $uploadedFile = $form->get('file')->getData();
+            $fileName = $imageManager->upload($uploadedFile, $file->isPublic());
+
+            $file->setPath($fileName);
+            $file->setType('image');
+            $file->setCreatedOn(new \DateTimeImmutable());
+
+            $entityManager->persist($file);
+            $entityManager->flush();
+        }
+
+        return $this->render('admin/upload.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/download', name: 'app_admin_download')]
+    public function download(EntityManagerInterface $em)
+    {
+        $images = $em->getRepository(File::class)->findAll();
+        return $this->render("admin/download.html.twig", [
+            'images' => $images
+        ]);
+
+    }
+
+    #[Route('/image/stream/{id}', name: 'app_image_stream')]
+    public function imageStream(int $id, EntityManagerInterface $em, ImageManager $imageManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $image = $em->getRepository(File::class)->find($id);
+        $filePath = $image->getPath();
+
+        //return new Response('Fichier ok derrier image->path');
+
+        return $imageManager->stream($filePath);
     }
 
     #[Route('/user', name: 'app_user_index', methods: ['GET'])]
@@ -70,4 +126,38 @@ class AdminController extends AbstractController
             'user' => $user,
         ]);
     }
+
+    #[Route('/user/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $role = $form->get('roles')->getData();;
+            $roles = [];
+            $roles[] = $role;
+            $roles[] = "ROLE_USER"; 
+            $user->setRoles($roles);
+            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('/admin/user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/user/{id}', name: 'app_user_delete', methods: ['POST'])]
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
 }
