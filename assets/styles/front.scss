@@ -2,13 +2,14 @@ $primary: green;
 
 // Import all of Bootstrap's CSS
 @import "admin/navbar.scss";
+@import "product/show.scss";
+@import "cart/show.scss";
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons";
 
 body {
     background-color: rgb(255, 255, 255);
     font-size: 16px;
-    text-align: center;
 }
 
 .page-content {

@@ -15,7 +15,7 @@ class Cart
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $total = null;
 
     #[ORM\Column]
@@ -30,9 +30,13 @@ class Cart
     #[ORM\OneToMany(mappedBy: 'cart', targetEntity: SalesOrder::class)]
     private Collection $salesOrders;
 
+    #[ORM\OneToMany(mappedBy: 'cart', targetEntity: CartItem::class)]
+    private Collection $cartItems;
+
     public function __construct()
     {
         $this->salesOrders = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,6 +116,36 @@ class Cart
             // set the owning side to null (unless already changed)
             if ($salesOrder->getCart() === $this) {
                 $salesOrder->setCart(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CartItem>
+     */
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
+    public function addCartItem(CartItem $cartItem): static
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setCart($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCartItem(CartItem $cartItem): static
+    {
+        if ($this->cartItems->removeElement($cartItem)) {
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getCart() === $this) {
+                $cartItem->setCart(null);
             }
         }
 

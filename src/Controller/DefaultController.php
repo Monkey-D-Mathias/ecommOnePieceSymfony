@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ProductRepository;
 use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'app_default')]
+    public function index(ProductRepository $productRepository): Response
+    {
+        return $this->render('default/index.html.twig', [
+            'products' => $productRepository->findAll(),
+        ]);
+    }
+
     public function index(ImageManager $imageManager): Response
     {
         $var = 'toto';

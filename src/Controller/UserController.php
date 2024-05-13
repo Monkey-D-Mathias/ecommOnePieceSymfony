@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/user')]
 class UserController extends AbstractController
-{   
+{  
 
 /*     #[Route('/my-profile', name: 'app_user_my_profile')]
     public function myProfile(): Response
@@ -36,17 +36,13 @@ class UserController extends AbstractController
     #[Route('/profil', name: 'app_user_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, AuthorizationCheckerInterface $authorizationChecker, Request $request): Response
     {
-        $user = $userRepository->findOneBy(['id' => $this->getUser()->getId()]);
+        $user = $this->getUser();
         if(!$user){
-            return new Response('NON', 403);
+            //Le retourne vers la page de connexion
+            return $this->redirectToRoute('app_login');
         }
-
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
-
-    
-
-   
 }
