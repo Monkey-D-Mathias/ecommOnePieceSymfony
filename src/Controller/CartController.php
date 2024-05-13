@@ -45,29 +45,19 @@ class CartController extends AbstractController
         }
 
         //Recherche si des produit existe ou pas
-        $productAlreadyExist = false;
-        $cartProducts = $cartItemRepoitory->findOneBy(["cart" => $cart]);
-        if ($cartProducts) {
-            // Recherche le produit ajouter si il existe ou pas dans la liste
-            foreach ($cartProducts->getProducts() as $cartProduct) {
-                if ($cartProduct == $product) {
-                    $productAlreadyExist = true;
-                    break;
-                }
-            }
-        }
+        $productAlreadyExist = $cartItemRepoitory->findOneBy(["cart" => $cart, "product" => $product]);
         //Si il existe pas 
         if (!$productAlreadyExist) {
             //On ajoute le produit
             $cartItem = new CartItem();
-            $cartItem->addProduct($product);
+            $cartItem->setProduct($product);
             $cartItem->setCart($cart);
             $cartItem->setQuantity(1);
             $cartItem->setCreatedAt(new DateTime);
         }
         else{
             //Si le produit existe déjà dans la panier on modifie la quantité
-            $cartItem = $cartProducts;
+            $cartItem = $productAlreadyExist;
             $cartItem->setQuantity($cartItem->getQuantity() + 1);
         }
         $entityManager->persist($cartItem);
@@ -84,11 +74,9 @@ class CartController extends AbstractController
         $cart = $cartRepository->findOneBy(["user" => $user, "savedAt" => null]);
         $total = 0;
         foreach ($cart->getCartItems() as $item) {
-            $products = $item->getProducts();
+            $product = $item->getProduct();
             $quantity = $item->getQuantity();
-            foreach ($products as $product) {
-                $total = $total + $product->getPriceHt() * $quantity;
-            }
+            $total = $total + $product->getPriceHt() * $quantity;
         }
         return $this->render('cart/show.html.twig', [
             'cart' => $cart,

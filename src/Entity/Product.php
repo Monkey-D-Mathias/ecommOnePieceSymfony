@@ -34,7 +34,7 @@ class Product
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deleted_at = null;
 
-    #[ORM\ManyToMany(targetEntity: CartItem::class, mappedBy: 'product')]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartItem::class)]
     private Collection $cartItems;
 
     public function __construct()
@@ -131,7 +131,7 @@ class Product
     {
         if (!$this->cartItems->contains($cartItem)) {
             $this->cartItems->add($cartItem);
-            $cartItem->addProduct($this);
+            $cartItem->setProduct($this);
         }
 
         return $this;
@@ -140,7 +140,10 @@ class Product
     public function removeCartItem(CartItem $cartItem): static
     {
         if ($this->cartItems->removeElement($cartItem)) {
-            $cartItem->removeProduct($this);
+            // set the owning side to null (unless already changed)
+            if ($cartItem->getProduct() === $this) {
+                $cartItem->setProduct(null);
+            }
         }
 
         return $this;
