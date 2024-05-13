@@ -42,6 +42,17 @@ class Product
         $this->cartItems = new ArrayCollection();
     }
 
+    /*
+    #[ORM\Column(length: 128, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $priceWT = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $stock = null;
+    */
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,6 +64,7 @@ class Product
     }
 
     public function setName(string $name): static
+    //public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -67,9 +79,19 @@ class Product
     public function setPriceHt(float $price_ht): static
     {
         $this->price_ht = $price_ht;
-
         return $this;
     }
+  
+    /*
+    public function getPriceWT(): ?float
+    {
+        return $this->priceWT;
+    }
+
+    public function setPriceWT(?float $priceWT): static
+    {
+        $this->priceWT = $priceWT;
+     */
 
     public function getStock(): ?int
     {
