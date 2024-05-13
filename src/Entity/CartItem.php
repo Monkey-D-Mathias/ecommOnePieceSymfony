@@ -16,7 +16,6 @@ class CartItem
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\Column]
     private ?int $quantity = null;
 
@@ -31,7 +30,6 @@ class CartItem
 
     #[ORM\ManyToOne(inversedBy: 'cartItems')]
     private ?Product $product = null;
-
 
     public function getId(): ?int
     {

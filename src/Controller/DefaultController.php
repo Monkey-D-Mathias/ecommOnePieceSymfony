@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\ProductRepository;
+use App\Entity\File;
 use App\Service\ImageManager;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
 {
@@ -19,17 +20,17 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    public function index(ImageManager $imageManager): Response
-    {
-        $var = 'toto';
+    // public function index(ImageManager $imageManager): Response
+    // {
+    //     $var = 'toto';
 
-        $targetDirectory = $imageManager->getTargetDirectory();
+    //     $targetDirectory = $imageManager->getTargetDirectory();
 
-        return $this->render('default/index.html.twig', [
-            'controller_name' => $var,
-            'target_directory' => $targetDirectory
-        ]);
-    }
+    //     return $this->render('default/index.html.twig', [
+    //         'controller_name' => $var,
+    //         'target_directory' => $targetDirectory
+    //     ]);
+    // }
 
     public function imageStream(int $id, EntityManagerInterface $em): Response
     {

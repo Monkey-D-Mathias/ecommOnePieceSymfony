@@ -36,6 +36,15 @@ class Address
     #[ORM\OneToMany(mappedBy: 'address', targetEntity: UserAddress::class)]
     private Collection $userAddresses;
 
+    #[ORM\Column(length: 255)]
+    private ?string $number = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $city = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orderAddressId')]
+    private ?SalesOrderAddresses $salesOrderAddresses = null;
+
     public function __construct()
     {
         $this->userAddresses = new ArrayCollection();
@@ -144,6 +153,42 @@ class Address
                 $userAddress->setAddress(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(string $number): static
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getSalesOrderAddresses(): ?SalesOrderAddresses
+    {
+        return $this->salesOrderAddresses;
+    }
+
+    public function setSalesOrderAddresses(?SalesOrderAddresses $salesOrderAddresses): static
+    {
+        $this->salesOrderAddresses = $salesOrderAddresses;
 
         return $this;
     }

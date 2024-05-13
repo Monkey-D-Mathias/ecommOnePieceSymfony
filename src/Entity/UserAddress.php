@@ -26,7 +26,7 @@ class UserAddress
 
     public function __construct()
     {
-        $this->User = new ArrayCollection();
+        $this->user = new ArrayCollection();
         $this->address = new ArrayCollection();
     }
 

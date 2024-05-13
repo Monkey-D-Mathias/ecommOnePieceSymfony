@@ -37,6 +37,15 @@ class Product
     #[ORM\OneToMany(mappedBy: 'product', targetEntity: CartItem::class)]
     private Collection $cartItems;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Category $categories = null;
+
+    #[ORM\ManyToOne(inversedBy: 'productId')]
+    private ?SalesOrderLine $salesOrderLine = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Tax $taxes = null;
+
     public function __construct()
     {
         $this->cartItems = new ArrayCollection();
@@ -167,6 +176,42 @@ class Product
                 $cartItem->setProduct(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCategories(): ?Category
+    {
+        return $this->categories;
+    }
+
+    public function setCategories(?Category $categories): static
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    public function getSalesOrderLine(): ?SalesOrderLine
+    {
+        return $this->salesOrderLine;
+    }
+
+    public function setSalesOrderLine(?SalesOrderLine $salesOrderLine): static
+    {
+        $this->salesOrderLine = $salesOrderLine;
+
+        return $this;
+    }
+
+    public function getTaxes(): ?Tax
+    {
+        return $this->taxes;
+    }
+
+    public function setTaxes(?Tax $taxes): static
+    {
+        $this->taxes = $taxes;
 
         return $this;
     }
