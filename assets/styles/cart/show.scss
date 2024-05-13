@@ -1,0 +1,28 @@
+.cart-show{
+    .list-group{
+        .product{
+            display: flex;
+            gap: 20px;
+            .image{
+                max-width: 200px;
+                img{
+                    width: 100%;
+                }
+            }
+            .detail{
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                width: 100%;
+                .name{
+                    text-transform: capitalize;
+                    margin-bottom: 15px; 
+                }
+            }
+        }
+        .total{
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+}
