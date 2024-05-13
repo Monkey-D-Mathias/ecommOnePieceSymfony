@@ -1,0 +1,17 @@
+.container-fluid{
+    .container{
+        .card-product-show{
+            display: flex;
+            flex-flow: row;
+            width: 100% !important;
+            .card-body{
+                text-align: end;
+            }
+            
+        }
+        .card-product-show > *{
+            flex: 1;
+                
+        }
+    }
+}

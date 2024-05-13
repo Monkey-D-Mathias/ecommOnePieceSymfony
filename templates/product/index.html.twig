@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block content %}
+    <h1>Nos produits</h1>
+
+    <section class="py-5" id="product-list">
+        <div class="container">
+            <div class="row">
+                {% for product in products|slice(0, 6) %}
+                    <div class="col-12 col-md-6 col-lg-3 mb-5">
+                        <div class="card" style="width: 18rem;">
+                            <img src="/img/logo-ecom.png" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{product.name}}</h5>
+                                <p class="card-text">{{product.description}}</p>
+                                <p class="card-text">Prix : {{product.priceHt}}€</p>
+                                <a class="btn btn-primary" href="{{ path('app_product_show', {'id': product.id}) }}">Voir plus</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

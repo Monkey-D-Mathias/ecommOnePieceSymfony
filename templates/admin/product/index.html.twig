@@ -1,0 +1,45 @@
+{% extends '/admin/base.html.twig' %}
+
+{% block title %}Les produits{% endblock %}
+
+{% block content %}
+    <h1>Liste des produits</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix HT</th>
+                <th>Stock</th>
+                <th>Creer le</th>
+                <th>Supprimer le</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.priceHt }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ product.deletedAt ? product.deletedAt|date('Y-m-d H:i:s') : ''}}</td>
+                <td>
+                    <a class="btn btn-secondary" href="{{ path('app_product_show_admin', {'id': product.id}) }}"><i class="bi bi-eye"></i></a>
+                    <a class="btn btn-info" href="{{ path('app_product_edit_admin', {'id': product.id}) }}"><i class="bi bi-pencil-square"></i></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('app_product_new_admin') }}"><i class="bi bi-plus"></i> Ajouter</a>
+{% endblock %}
