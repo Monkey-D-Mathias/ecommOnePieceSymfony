@@ -20,17 +20,18 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    // public function index(ImageManager $imageManager): Response
-    // {
-    //     $var = 'toto';
+    #[Route('/', name: 'app_default_image')]
+    public function index2(ImageManager $imageManager): Response
+    {
+        $var = 'toto';
 
-    //     $targetDirectory = $imageManager->getTargetDirectory();
+        $targetDirectory = $imageManager->getTargetDirectory();
 
-    //     return $this->render('default/index.html.twig', [
-    //         'controller_name' => $var,
-    //         'target_directory' => $targetDirectory
-    //     ]);
-    // }
+        return $this->render('default/index.html.twig', [
+            'controller_name' => $var,
+            'target_directory' => $targetDirectory
+        ]);
+    }
 
     public function imageStream(int $id, EntityManagerInterface $em): Response
     {

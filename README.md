@@ -55,6 +55,14 @@ HOST_MACHINE_MH_HTTP_PORT=8025
 # Access to container specially
 docker-exec -ti nomDuContainer(ex: lamps-php) bash
 
+# Configure Shared 
+# Add in .env docker under PHPVERSION
+SHARED_DIRECTORY=./shared
+
+# Add in docker-compose.yaml in services section volume
+- ${SHARED_DIRECTORY-./shared}:/var/www/shared:rw
+
+# And don't forget to delete all container and images and rebuild all 
 
 
 
