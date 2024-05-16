@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
@@ -61,6 +62,25 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?int $stock = null;
     */
+
+    private string $slug;
+
+    #[ORM\OneToOne(inversedBy: 'product', cascade: ['persist', 'remove'])]
+    private ?File $file = null;
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    //Construction du slugg à la volée
+    //public function getSluggerDynamic(): string
+    //{
+        //$slugger = new AsciiSlugger();
+        //$slug = $slugger->slug($this->name);
+
+        //return strtolower($slug);
+    //}
 
     public function getId(): ?int
     {
@@ -212,6 +232,18 @@ class Product
     public function setTaxes(?Tax $taxes): static
     {
         $this->taxes = $taxes;
+
+        return $this;
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+
+    public function setFile(?File $file): static
+    {
+        $this->file = $file;
 
         return $this;
     }
