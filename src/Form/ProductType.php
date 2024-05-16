@@ -4,10 +4,14 @@ namespace App\Form;
 
 use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType as SymfonyFileType;
+use Symfony\Component\Validator\Constraints\File as ConstraintsFile;
+
 
 class ProductType extends AbstractType
 {
@@ -30,6 +34,27 @@ class ProductType extends AbstractType
                 'required' => true,
                 'label' => 'Stock*'
             ])
+            ->add('file', SymfonyFileType::class, [
+                'mapped' => false,
+                'required' => true,
+                'constraints' => [
+                    new ConstraintsFile([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                             'image/jpeg',
+                             'image/png',
+                             'image/jpg',
+                         ]
+                    ])
+                ],
+             ])
+             ->add('public', CheckboxType::class, [
+                "value"=> 1 ,
+                'mapped' => false,
+                'required' => false, // Si vous ne voulez pas que ce champ soit obligatoire
+            ])
+
+
         ;
     }
 

@@ -55,12 +55,23 @@ HOST_MACHINE_MH_HTTP_PORT=8025
 # Access to container specially
 docker-exec -ti nomDuContainer(ex: lamps-php) bash
 
+# Configure Shared 
+# Add in .env docker under PHPVERSION
+SHARED_DIRECTORY=./shared
+
+# Add in docker-compose.yaml in services section volume
+- ${SHARED_DIRECTORY-./shared}:/var/www/shared:rw
+
+# And don't forget to delete all container and images and rebuild all 
+
+
 # When you have this error in your docker => the container mysql8 restart 
 # Go to the file in bin/mysql8/dockerFile and the code below
 FROM mysql:8
 RUN echo "[mysqld]" >> /etc/mysql/my.cnf
 RUN echo "mysql_native_password=ON" >> /etc/mysql/my.cnf
 # After that you need to delete all in your directory data/mysql (commande sudo rm -r /chemin/du/dossier)
+
 
 # GitHub command
 

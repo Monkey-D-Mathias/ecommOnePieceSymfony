@@ -33,7 +33,8 @@ class ImageManager
     {
         $fileName = null;
        // $file_exists($this->targetDirectory."".$this->subDirectory.'/'.$fileName);
-//dd($this->getDirectory($public));
+    
+//dd(__DIR__,$this->getDirectory($public));
        if (file_exists($this->getDirectory($public)) === false){
             mkdir($this->getDirectory($public), 0755, true);
        }
@@ -43,7 +44,7 @@ class ImageManager
         while($count < 10 && $fileName == null || file_exists($this->getDirectory($public).'/'.$fileName)) {
             $fileName = md5($file->getClientOriginalName()).
             '_'.
-            str_replace('.','_',uniqid('',true)).
+            str_replace('.','_',uniqid('',true)).'.'.
             $file->guessExtension();
             $count ++;
         }
