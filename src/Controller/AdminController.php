@@ -61,12 +61,18 @@ class AdminController extends AbstractController
             $file->setPath($fileName);
             $file->setType('image');
             $file->setCreatedOn(new \DateTimeImmutable());
+            //$file->setPublic($public);
+            // $file->setPublic(true);  //Pour supprimer dans ProductType le champs pulic
+            //$file->setName($uploadFile->getClientOriginalName());
+            $file->setCreatedOn(new \DateTimeImmutable());
 
             $entityManager->persist($file);
+           // $entityManager->persist($product);
             $entityManager->flush();
         }
 
         return $this->render('admin/upload.html.twig', [
+           // 'product' => $product,
             'form' => $form->createView(),
         ]);
     }
@@ -184,14 +190,26 @@ class AdminController extends AbstractController
     }
 
     #[Route('/product/new', name: 'app_product_new_admin', methods: ['GET', 'POST'])]
-    public function newProduct(Request $request, EntityManagerInterface $entityManager): Response
+    public function newProduct(Request $request, EntityManagerInterface $entityManager, ImageManager $imageManager): Response
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
+        $file = new File();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $formData = $form->getData();
+            $public = $form->get('public')->getData();
+            $uploadFile = $form->get('file')->getData();
+            $nameFile = $imageManager->upload($uploadFile, $public);
+            $file->setName("TEST");
+            $file->setPath($nameFile);
+            $file->setPublic($public);
+            $file->setType('image');
+            $file->setCreatedOn(new \DateTimeImmutable());
             $product->setCreatedAt(new \DateTime);
+            $product->setFile($file);
+            $entityManager->persist($file);
             $entityManager->persist($product);
             $entityManager->flush();
 

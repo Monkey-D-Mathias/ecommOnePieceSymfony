@@ -20,7 +20,7 @@ class File
     #[ORM\Column]
     private ?bool $public = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column]
     private ?\DateTimeImmutable $createdOn = null;
 
     #[ORM\Column(nullable: true)]
@@ -31,6 +31,9 @@ class File
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\OneToOne(mappedBy: 'file', cascade: ['persist', 'remove'])]
+    private ?Product $product = null;
 
     public function getId(): ?int
     {
@@ -105,6 +108,28 @@ class File
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($product === null && $this->product !== null) {
+            $this->product->setFile(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($product !== null && $product->getFile() !== $this) {
+            $product->setFile($this);
+        }
+
+        $this->product = $product;
 
         return $this;
     }
